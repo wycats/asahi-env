@@ -1,0 +1,71 @@
+{
+  "gsettings": {
+    "added": {},
+    "removed": {},
+    "changed": {}
+  },
+  "files": {
+    "added": {},
+    "removed": {},
+    "changed": {}
+  },
+  "commands": {
+    "added": {
+      "journalctl -u titdb -b --no-pager --since Thu 2025-12-18 22:21:19 PST -n 200": {
+        "status": 0,
+        "stdout": "Dec 18 22:21:19 fedora systemd[1]: Stopping titdb.service - Trackpad Is Too Damn Big Daemon...\nDec 18 22:21:19 fedora systemd[1]: titdb.service: Deactivated successfully.\nDec 18 22:21:19 fedora systemd[1]: Stopped titdb.service - Trackpad Is Too Damn Big Daemon.\nDec 18 22:21:19 fedora systemd[1]: titdb.service: Consumed 8.753s CPU time, 3M memory peak.\nDec 18 22:21:19 fedora systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.",
+        "stderr": ""
+      },
+      "journald (native) titdb since service start": {
+        "status": 0,
+        "stdout": "<no matching entries found>\n",
+        "stderr": ""
+      },
+      "libinput list-devices": {
+        "status": 0,
+        "stdout": "Device:                  Apple SMC power/lid events\nKernel:                  /dev/input/event3\nId:                      <unknown>:0000:0000\nGroup:                   1\nSeat:                    seat0, default\nCapabilities:            keyboard switch\nTap-to-click:            n/a\nTap-and-drag:            n/a\nTap button map:          n/a\nTap drag lock:           n/a\nLeft-handed:             n/a\nNat.scrolling:           n/a\nMiddle emulation:        n/a\nCalibration:             n/a\nScroll methods:          none\nScroll button:           n/a\nScroll button lock:      n/a\nClick methods:           none\nClickfinger button map:  n/a\nDisable-w-typing:        n/a\nDisable-w-trackpointing: n/a\nAccel profiles:          n/a\nRotation:                0.0\nArea rectangle:          n/a\n\nDevice:                  Apple MTP multi-touch\nKernel:                  /dev/input/event0\nId:                      host:05ac:0352\nGroup:                   2\nSeat:                    seat0, default\nSize:                    126x78mm\nCapabilities:            pointer gesture\nTap-to-click:            disabled\nTap-and-drag:            enabled\nTap button map:          left/right/middle\nTap drag lock:           disabled\nLeft-handed:             disabled\nNat.scrolling:           enabled\nMiddle emulation:        disabled\nCalibration:             n/a\nScroll methods:          *two-finger edge \nScroll button:           n/a\nScroll button lock:      n/a\nClick methods:           button-areas *clickfinger \nClickfinger button map:  left/right/middle\nDisable-w-typing:        enabled\nDisable-w-trackpointing: enabled\nAccel profiles:          flat *adaptive custom\nRotation:                n/a\nArea rectangle:          n/a\n\nDevice:                  Apple MTP keyboard\nKernel:                  /dev/input/event2\nId:                      host:05ac:0352\nGroup:                   3\nSeat:                    seat0, default\nCapabilities:            keyboard \nTap-to-click:            n/a\nTap-and-drag:            n/a\nTap button map:          n/a\nTap drag lock:           n/a\nLeft-handed:             n/a\nNat.scrolling:           n/a\nMiddle emulation:        n/a\nCalibration:             n/a\nScroll methods:          none\nScroll button:           n/a\nScroll button lock:      n/a\nClick methods:           none\nClickfinger button map:  n/a\nDisable-w-typing:        n/a\nDisable-w-trackpointing: n/a\nAccel profiles:          n/a\nRotation:                0.0\nArea rectangle:          n/a\n\nDevice:                  Yubico YubiKey OTP+FIDO+CCID\nKernel:                  /dev/input/event1\nId:                      usb:1050:0407\nGroup:                   4\nSeat:                    seat0, default\nCapabilities:            keyboard \nTap-to-click:            n/a\nTap-and-drag:            n/a\nTap button map:          n/a\nTap drag lock:           n/a\nLeft-handed:             n/a\nNat.scrolling:           n/a\nMiddle emulation:        n/a\nCalibration:             n/a\nScroll methods:          none\nScroll button:           n/a\nScroll button lock:      n/a\nClick methods:           none\nClickfinger button map:  n/a\nDisable-w-typing:        n/a\nDisable-w-trackpointing: n/a\nAccel profiles:          n/a\nRotation:                0.0\nArea rectangle:          n/a\n\nDevice:                  Apple MTP multi-touch\nKernel:                  /dev/input/event7\nId:                      host:05ac:0352\nGroup:                   5\nSeat:                    seat0, default\nSize:                    126x78mm\nCapabilities:            pointer gesture\nTap-to-click:            disabled\nTap-and-drag:            enabled\nTap button map:          left/right/middle\nTap drag lock:           disabled\nLeft-handed:             disabled\nNat.scrolling:           enabled\nMiddle emulation:        disabled\nCalibration:             n/a\nScroll methods:          *two-finger edge \nScroll button:           n/a\nScroll button lock:      n/a\nClick methods:           button-areas *clickfinger \nClickfinger button map:  left/right/middle\nDisable-w-typing:        enabled\nDisable-w-trackpointing: enabled\nAccel profiles:          flat *adaptive custom\nRotation:                n/a\nArea rectangle:          n/a\n\nDevice:                  keyd virtual keyboard\nKernel:                  /dev/input/event5\nId:                      usb:0fac:0ade\nGroup:                   6\nSeat:                    seat0, default\nCapabilities:            keyboard \nTap-to-click:            n/a\nTap-and-drag:            n/a\nTap button map:          n/a\nTap drag lock:           n/a\nLeft-handed:             n/a\nNat.scrolling:           n/a\nMiddle emulation:        n/a\nCalibration:             n/a\nScroll methods:          none\nScroll button:           n/a\nScroll button lock:      n/a\nClick methods:           none\nClickfinger button map:  n/a\nDisable-w-typing:        n/a\nDisable-w-trackpointing: n/a\nAccel profiles:          n/a\nRotation:                0.0\nArea rectangle:          n/a\n\nDevice:                  keyd virtual pointer\nKernel:                  /dev/input/event6\nId:                      usb:0fac:1ade\nGroup:                   7\nSeat:                    seat0, default\nCapabilities:            pointer \nTap-to-click:            n/a\nTap-and-drag:            n/a\nTap button map:          n/a\nTap drag lock:           n/a\nLeft-handed:             disabled\nNat.scrolling:           disabled\nMiddle emulation:        disabled\nCalibration:             identity matrix\nScroll methods:          button\nScroll button:           BTN_MIDDLE\nScroll button lock:      disabled\nClick methods:           none\nClickfinger button map:  n/a\nDisable-w-typing:        n/a\nDisable-w-trackpointing: n/a\nAccel profiles:          flat *adaptive custom\nRotation:                0.0\nArea rectangle:          n/a\n",
+        "stderr": ""
+      }
+    },
+    "removed": {
+      "journalctl -u titdb -b --no-pager --since Thu 2025-12-18 14:23:20 PST -n 200": {
+        "status": 0,
+        "stdout": "Dec 18 14:23:20 fedora systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.",
+        "stderr": ""
+      }
+    },
+    "changed": {
+      "date -Iseconds": {
+        "old": {
+          "status": 0,
+          "stdout": "2025-12-18T17:46:17-08:00",
+          "stderr": ""
+        },
+        "new": {
+          "status": 0,
+          "stdout": "2025-12-18T22:22:41-08:00",
+          "stderr": ""
+        }
+      },
+      "systemctl --no-pager --full status titdb": {
+        "old": {
+          "status": 0,
+          "stdout": "● titdb.service - Trackpad Is Too Damn Big Daemon\n     Loaded: loaded (/etc/systemd/system/titdb.service; enabled; preset: disabled)\n    Drop-In: /usr/lib/systemd/system/service.d\n             └─10-timeout-abort.conf\n     Active: active (running) since Thu 2025-12-18 14:23:20 PST; 3h 22min ago\n Invocation: 9dd1e85635334c638184c46ed17f3ef5\n   Main PID: 220512 (titdb)\n      Tasks: 1 (limit: 58095)\n     Memory: 640K (peak: 3M)\n        CPU: 2.629s\n     CGroup: /system.slice/titdb.service\n             └─220512 /usr/local/bin/titdb -b 25 -l 20 -r 20 -t 5 -d /dev/input/event0\n\nDec 18 14:23:20 fedora systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.",
+          "stderr": ""
+        },
+        "new": {
+          "status": 0,
+          "stdout": "● titdb.service - Trackpad Is Too Damn Big Daemon\n     Loaded: loaded (/etc/systemd/system/titdb.service; enabled; preset: disabled)\n    Drop-In: /usr/lib/systemd/system/service.d\n             └─10-timeout-abort.conf\n     Active: active (running) since Thu 2025-12-18 22:21:19 PST; 1min 22s ago\n Invocation: 5f7d2c76f0364d03ab09d588bc4c9b41\n   Main PID: 301063 (titdb)\n      Tasks: 1 (limit: 58095)\n     Memory: 640K (peak: 2M)\n        CPU: 53ms\n     CGroup: /system.slice/titdb.service\n             └─301063 /usr/local/bin/titdb -b 25 -l 20 -r 20 -t 5 -d /dev/input/by-path/platform-2a9b30000.input-event-mouse\n\nDec 18 22:21:19 fedora systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.",
+          "stderr": ""
+        }
+      }
+    }
+  },
+  "skipped": {
+    "added": {},
+    "removed": {
+      "journald (native) titdb since service start": "requires reading the system journal; run `sudo asahi-setup doctor` (note: `--sudo` only affects subprocess probes)"
+    },
+    "changed": {}
+  }
+}

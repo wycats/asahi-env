@@ -1,0 +1,146 @@
+surgical_strikes = []
+
+[[epochs]]
+id = "epoch-1"
+title = "Epoch 1: Genesis"
+status = "active"
+
+[[epochs.phases]]
+id = "phase-1"
+title = "Phase 1: Baseline + Bringup Automation"
+status = "active"
+
+[[epochs.phases.tasks]]
+id = "doctor"
+label = "Baseline: system doctor report"
+status = "in_progress"
+
+[[epochs.phases.tasks]]
+id = "runbook"
+label = "Rewrite bootstrap as runbook"
+status = "completed"
+
+[[epochs.phases.tasks]]
+id = "rust-cli"
+label = "Design Rust automation (check/apply/verify)"
+status = "completed"
+
+[[epochs.phases.tasks]]
+id = "verify"
+label = "Make exo verify real"
+status = "completed"
+
+[[epochs.phases.tasks]]
+id = "manifesto"
+label = "Expand manifesto (portability + empiricism)"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "titdb-fix"
+label = "Fix titdb not starting (diagnose root cause + ensure service reliably starts)"
+status = "completed"
+
+[[epochs.phases.tasks]]
+id = "Edge via muvm + packaging::edge-stack-mprotect-classify"
+label = "Classify stack mprotect(ENOMEM) events per pthread PID"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "Edge via muvm + packaging::edge-overcommit-policy-flip"
+label = "Run guest overcommit policy flip experiment"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "Edge via muvm + packaging::edge-guest-limits-cgroups"
+label = "Capture guest limits + cgroup memory settings for each run"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "Edge via muvm + packaging::edge-repeatability-matrix"
+label = "Repeat trials per --mem setting; correlate pthread with stack mprotect ENOMEM"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "appimage-runner"
+label = "Generic AppImage runner in Rust (extract + run without guest FUSE; muvm/FEX friendly)"
+status = "completed"
+
+[[epochs.phases.tasks]]
+id = "appimage-runner"
+label = "Generic AppImage runner in Rust (extract + run without guest FUSE; muvm/FEX friendly)"
+status = "pending"
+
+[[epochs.phases]]
+id = "phase-1-docs-build"
+title = "Phase 2: Documentation Build (mdBook)"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "mdbook-install"
+label = "Install mdbook + document install"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "mdbook-build"
+label = "Add optional mdBook build command"
+status = "pending"
+
+[[epochs.phases]]
+id = "phase-1-muvm-edge"
+title = "Phase 3: x86 Apps via muvm (Edge + Packaging)"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "edge-muvm"
+label = "Test Edge via muvm"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "edge-wrapper"
+label = "Wrap Edge launch/install ergonomics"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "dnf-x86-source"
+label = "Investigate dnf-sourced x86 packages under muvm"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "muvm-package"
+label = "Design a nice muvm-based package/launcher"
+status = "pending"
+
+[[epochs]]
+id = "epoch-2"
+title = "Epoch 2: Connectivity (Omada + Empiricism)"
+status = "pending"
+
+[[epochs.phases]]
+id = "phase-2"
+title = "Phase 2: Home Wi-Fi Forensics (Omada)"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "wifi-baseline"
+label = "Collect baseline + failure modes"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "wifi-probes"
+label = "Run controlled probes (2.4 vs 5/6GHz)"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "omada-audit"
+label = "Audit Omada settings + hypotheses"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "remediations"
+label = "Targeted changes + rollback plan"
+status = "pending"
+
+[[epochs.phases.tasks]]
+id = "validation"
+label = "Validate improvements + deletion conditions"
+status = "pending"

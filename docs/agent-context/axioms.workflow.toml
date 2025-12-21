@@ -1,0 +1,23 @@
+# READ-ONLY: Use 'exo' CLI to modify this file.
+# Workflow Axioms
+
+[[axioms]]
+id = "context-is-king"
+principle = "Context is King"
+rationale = "We cannot build what we do not understand."
+implications = ["Always read the context before acting."]
+tags = ["core", "workflow"]
+
+[[axioms]]
+id = "phased-execution"
+principle = "Phased Execution"
+rationale = "Jumping ahead leads to chaos."
+implications = ["Finish the current phase before starting the next."]
+tags = ["workflow"]
+
+[[axioms]]
+id = "strict-mode"
+principle = "Strict Mode"
+rationale = "We value correctness over speed."
+implications = ["Always write tests before code."]
+tags = ["workflow", "mode", "strict"]

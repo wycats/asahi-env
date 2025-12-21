@@ -1,0 +1,59 @@
+{
+  "gsettings": {
+    "added": {},
+    "removed": {},
+    "changed": {}
+  },
+  "files": {
+    "added": {},
+    "removed": {},
+    "changed": {}
+  },
+  "commands": {
+    "added": {},
+    "removed": {},
+    "changed": {
+      "date -Iseconds": {
+        "old": {
+          "status": 0,
+          "stdout": "2025-12-18T22:28:35-08:00",
+          "stderr": ""
+        },
+        "new": {
+          "status": 0,
+          "stdout": "2025-12-18T22:35:19-08:00",
+          "stderr": ""
+        }
+      },
+      "journald (native) titdb since service start": {
+        "old": {
+          "status": 0,
+          "stdout": "<no matching entries found>\n",
+          "stderr": ""
+        },
+        "new": {
+          "status": 0,
+          "stdout": "1766125279130551 systemd[1]: Stopping titdb.service - Trackpad Is Too Damn Big Daemon...\n1766125279177939 systemd[1]: titdb.service: Deactivated successfully.\n1766125279178088 systemd[1]: Stopped titdb.service - Trackpad Is Too Damn Big Daemon.\n1766125279178359 systemd[1]: titdb.service: Consumed 8.753s CPU time, 3M memory peak.\n1766125279179570 systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.\n",
+          "stderr": ""
+        }
+      },
+      "systemctl --no-pager --full status titdb": {
+        "old": {
+          "status": 0,
+          "stdout": "● titdb.service - Trackpad Is Too Damn Big Daemon\n     Loaded: loaded (/etc/systemd/system/titdb.service; enabled; preset: disabled)\n    Drop-In: /usr/lib/systemd/system/service.d\n             └─10-timeout-abort.conf\n     Active: active (running) since Thu 2025-12-18 22:21:19 PST; 7min ago\n Invocation: 5f7d2c76f0364d03ab09d588bc4c9b41\n   Main PID: 301063 (titdb)\n      Tasks: 1 (limit: 58095)\n     Memory: 640K (peak: 2M)\n        CPU: 194ms\n     CGroup: /system.slice/titdb.service\n             └─301063 /usr/local/bin/titdb -b 25 -l 20 -r 20 -t 5 -d /dev/input/by-path/platform-2a9b30000.input-event-mouse\n\nDec 18 22:21:19 fedora systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.",
+          "stderr": ""
+        },
+        "new": {
+          "status": 0,
+          "stdout": "● titdb.service - Trackpad Is Too Damn Big Daemon\n     Loaded: loaded (/etc/systemd/system/titdb.service; enabled; preset: disabled)\n    Drop-In: /usr/lib/systemd/system/service.d\n             └─10-timeout-abort.conf\n     Active: active (running) since Thu 2025-12-18 22:21:19 PST; 13min ago\n Invocation: 5f7d2c76f0364d03ab09d588bc4c9b41\n   Main PID: 301063 (titdb)\n      Tasks: 1 (limit: 58095)\n     Memory: 640K (peak: 2M)\n        CPU: 286ms\n     CGroup: /system.slice/titdb.service\n             └─301063 /usr/local/bin/titdb -b 25 -l 20 -r 20 -t 5 -d /dev/input/by-path/platform-2a9b30000.input-event-mouse\n\nDec 18 22:21:19 fedora systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.",
+          "stderr": ""
+        }
+      }
+    }
+  },
+  "skipped": {
+    "added": {},
+    "removed": {},
+    "changed": {}
+  }
+}

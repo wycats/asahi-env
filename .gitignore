@@ -1,0 +1,24 @@
+.local
+target
+temp_debug
+
+# EROFS images
+*.erofs
+*.erofs.bak
+
+# Temporary build directories
+fedora-rootfs/
+fedora-rootfs-temp/
+temp_extract/
+temp_mount/
+sniper-work/
+
+# AppImage runner cache
+.cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

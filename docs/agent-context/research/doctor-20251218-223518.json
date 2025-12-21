@@ -1,0 +1,66 @@
+{
+  "timestamp": "2025-12-18T22:35:19-08:00",
+  "uname": "Linux fedora 6.17.12-400.asahi.fc42.aarch64+16k #1 SMP PREEMPT_DYNAMIC Sun Dec 14 02:20:03 UTC 2025 aarch64 GNU/Linux",
+  "os_release": "NAME=\"Fedora Linux Asahi Remix\"\nVERSION=\"42 (Forty Two [Adams])\"\nRELEASE_TYPE=stable\nID=fedora-asahi-remix\nID_LIKE=fedora\nVERSION_ID=42\nVERSION_CODENAME=\"adams\"\nPRETTY_NAME=\"Fedora Linux Asahi Remix 42 (Forty Two [Adams])\"\nANSI_COLOR=\"0;38;2;60;110;180\"\nLOGO=fedora-logo-icon\nCPE_NAME=\"cpe:/o:fedoraproject:fedora-asahi-remix:42\"\nDEFAULT_HOSTNAME=\"fedora\"\nHOME_URL=\"https://fedora-asahi-remix.org/\"\nDOCUMENTATION_URL=\"https://docs.fedoraproject.org/en-US/fedora-asahi-remix/\"\nSUPPORT_URL=\"https://discussion.fedoraproject.org/c/neighbors/asahi/asahi-help/94\"\nBUG_REPORT_URL=\"https://bugzilla.redhat.com/\"\nREDHAT_BUGZILLA_PRODUCT=\"Fedora\"\nREDHAT_BUGZILLA_PRODUCT_VERSION=42\nREDHAT_SUPPORT_PRODUCT=\"Fedora\"\nREDHAT_SUPPORT_PRODUCT_VERSION=42\nVARIANT=\"Workstation Edition\"\nVARIANT_ID=workstation",
+  "gsettings": {
+    "org.gnome.desktop.wm.keybindings switch-input-source": "['<Super>space', 'XF86Keyboard']",
+    "org.gnome.desktop.wm.keybindings switch-input-source-backward": "['<Shift><Super>space', '<Shift>XF86Keyboard']",
+    "org.gnome.mutter overlay-key": "'Super'",
+    "org.gnome.settings-daemon.plugins.media-keys screensaver": "['<Super>l']",
+    "org.gnome.settings-daemon.plugins.media-keys search": "['']"
+  },
+  "files": {
+    "/etc/NetworkManager/conf.d/wifi_backend.conf": "[device]\nwifi.backend=iwd",
+    "/etc/keyd/default.conf": "[ids]\n*\n\n[main]\n# Map physical Left Command (Meta) to our custom 'meta_mac' layer.\nleftmeta = layer(meta_mac)\n\n# Map physical Left Alt (Option) to Meta (Super/Windows key).\n# This gives you a dedicated key for GNOME Overview/Snapping (Super+Arrows).\nleftalt = layer(meta)\n\n# ---------------------------------------------------------------------------\n# THE ALT-BASE LAYER ([meta_mac:A])\n# ---------------------------------------------------------------------------\n# Critical Logic: This layer inherits from ':A' (Alt).\n# 1. Holding physical Command is seen by the OS as holding Alt.\n# 2. This ensures Cmd+Tab behaves exactly like Alt+Tab (Switch Application),\n#    keeping the switcher UI open as long as the key is held.\n# ---------------------------------------------------------------------------\n\n[meta_mac:A]\n\n# --- WINDOW SWITCHING (Native Behavior) ---\n# We do NOT remap Tab. Because we inherit :A, pressing Tab sends Alt+Tab.\n# We do NOT remap Grave (`). Pressing it sends Alt+` (GNOME Switch Group).\n\n\n# --- TERMINAL & CLIPBOARD COMPATIBILITY (IBM CUA) ---\n# Problem: Cmd+C usually sends Ctrl+C (Interrupt).\n# Solution: Map Cmd+C/V/X to the \"Insert\" variants.\n# This works in Terminals (Copy/Paste) AND GUI Apps (Copy/Paste) identically.\nc = C-insert\nv = S-insert\nx = S-delete\n\n\n# --- THE INVERSION FIX (Map Alt back to Control) ---\n# Since this layer defaults to Alt, pressing 'T' would send 'Alt+T'.\n# We must explicitly force every shortcut key to send 'Control+Key' instead.\n\na = C-a\nb = C-b\nd = C-d\ne = C-e\nf = C-f\ng = C-g\nh = C-h\ni = C-i\nj = C-j\nk = C-k\nl = C-l\nm = C-m\nn = C-n\no = C-o\np = C-p\nq = C-q\nr = C-r\ns = C-s\nt = C-t\nu = C-u\nw = C-w\ny = C-y\nz = C-z\n\n\n# --- SYMBOLS & NAVIGATION (Mac Style) ---\n\n# Text Navigation\n# Cmd+Left/Right -> Home/End (Start/End of line)\nleft = home\nright = end\n# Cmd+Up/Down -> Start/End of document\nup = C-home\ndown = C-end\n\n# Common IDE/Browser Shortcuts\n# Cmd+/ (Comment/Help) -> Ctrl+/\n/ = C-/\n# Cmd+[ / Cmd+] (Indent/Dedent) -> Ctrl+[ / Ctrl+]\n[ = C-[\n…<truncated>…"
+  },
+  "commands": {
+    "date -Iseconds": {
+      "status": 0,
+      "stdout": "2025-12-18T22:35:19-08:00",
+      "stderr": ""
+    },
+    "journalctl -u titdb -b --no-pager --since Thu 2025-12-18 22:21:19 PST -n 200": {
+      "status": 0,
+      "stdout": "Dec 18 22:21:19 fedora systemd[1]: Stopping titdb.service - Trackpad Is Too Damn Big Daemon...\nDec 18 22:21:19 fedora systemd[1]: titdb.service: Deactivated successfully.\nDec 18 22:21:19 fedora systemd[1]: Stopped titdb.service - Trackpad Is Too Damn Big Daemon.\nDec 18 22:21:19 fedora systemd[1]: titdb.service: Consumed 8.753s CPU time, 3M memory peak.\nDec 18 22:21:19 fedora systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.",
+      "stderr": ""
+    },
+    "journald (native) titdb since service start": {
+      "status": 0,
+      "stdout": "1766125279130551 systemd[1]: Stopping titdb.service - Trackpad Is Too Damn Big Daemon...\n1766125279177939 systemd[1]: titdb.service: Deactivated successfully.\n1766125279178088 systemd[1]: Stopped titdb.service - Trackpad Is Too Damn Big Daemon.\n1766125279178359 systemd[1]: titdb.service: Consumed 8.753s CPU time, 3M memory peak.\n1766125279179570 systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.\n",
+      "stderr": ""
+    },
+    "keyd --version": {
+      "status": 0,
+      "stdout": "keyd v2.5.0 (30434c9)",
+      "stderr": ""
+    },
+    "systemctl --no-pager --full status titdb": {
+      "status": 0,
+      "stdout": "● titdb.service - Trackpad Is Too Damn Big Daemon\n     Loaded: loaded (/etc/systemd/system/titdb.service; enabled; preset: disabled)\n    Drop-In: /usr/lib/systemd/system/service.d\n             └─10-timeout-abort.conf\n     Active: active (running) since Thu 2025-12-18 22:21:19 PST; 13min ago\n Invocation: 5f7d2c76f0364d03ab09d588bc4c9b41\n   Main PID: 301063 (titdb)\n      Tasks: 1 (limit: 58095)\n     Memory: 640K (peak: 2M)\n        CPU: 286ms\n     CGroup: /system.slice/titdb.service\n             └─301063 /usr/local/bin/titdb -b 25 -l 20 -r 20 -t 5 -d /dev/input/by-path/platform-2a9b30000.input-event-mouse\n\nDec 18 22:21:19 fedora systemd[1]: Started titdb.service - Trackpad Is Too Damn Big Daemon.",
+      "stderr": ""
+    },
+    "systemctl is-active keyd": {
+      "status": 0,
+      "stdout": "active",
+      "stderr": ""
+    },
+    "systemctl is-active titdb": {
+      "status": 0,
+      "stdout": "active",
+      "stderr": ""
+    },
+    "systemctl is-enabled titdb": {
+      "status": 0,
+      "stdout": "enabled",
+      "stderr": ""
+    },
+    "uname -a": {
+      "status": 0,
+      "stdout": "Linux fedora 6.17.12-400.asahi.fc42.aarch64+16k #1 SMP PREEMPT_DYNAMIC Sun Dec 14 02:20:03 UTC 2025 aarch64 GNU/Linux",
+      "stderr": ""
+    }
+  },
+  "skipped": {
+    "libinput list-devices": "requires sudo to inspect /dev/input; run `sudo asahi-setup doctor`"
+  }
+}
