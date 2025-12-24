@@ -23,7 +23,11 @@ sniper-work/
 
 # Evidence artifacts (high churn; keep curated notes only)
 docs/agent-context/research/**
+!docs/agent-context/research/**/
 !docs/agent-context/research/**/*.md
+
+# Generated research artifacts (regenerable; too large to track)
+docs/agent-context/research/sniper-manifest*.md
 
 # Coverage outputs
 coverage/

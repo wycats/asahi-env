@@ -453,7 +453,7 @@ FEX-level logging experiments:
   - Result: still no FEX-prefixed lines in `stderr.txt`.
 - Attempt 3 (force debug output): `.local/edge-muvm/headless-1766285199525`
   - `--edge-env=FEX_DUMPIR=stderr` and `--edge-env=FEX_DISASSEMBLE=dispatcher`.
-  - Result: FEX *does* honor these options and begins emitting IR dumps to `stderr.txt` immediately.
+  - Result: FEX _does_ honor these options and begins emitting IR dumps to `stderr.txt` immediately.
   - Caveat: this produces an enormous stderr (`~1.5G`, `~43M` lines) and can easily overwhelm typical log-grep workflows.
 - Attempt 4 (redirect IR dumps to shared folder): `.local/edge-muvm/headless-1766285431364`
   - `--edge-env=FEX_DUMPIR=/home/wycats/Code/Personal/asahi/.local/edge-muvm/fex-dumpir`.
@@ -462,13 +462,14 @@ FEX-level logging experiments:
 Interpretation (tentative):
 
 - “Normal” FEX logging toggles didn’t produce obvious messages in our environment, but FEX debug dumping knobs (`FEX_DUMPIR`, `FEX_DISASSEMBLE`) clearly apply and can be used to extract emulator-side state if we can find a way to bound the output.
-- Next step here (if we pursue it): identify a *bounded* FEX debug setting that emits a small amount of information prior to the renderer `SIGTRAP` (or isolate to just the renderer via per-app config), rather than emitting every IR block.
+- Next step here (if we pursue it): identify a _bounded_ FEX debug setting that emits a small amount of information prior to the renderer `SIGTRAP` (or isolate to just the renderer via per-app config), rather than emitting every IR block.
 
 FEX JIT/SMC hypothesis experiments:
 
 - Motivation: AVX/AVX2 disabling at the Chromium layer did not prevent renderer `SIGTRAP` in FEX mappings, suggesting this is not “one unsupported instruction” but potentially JIT/SMC coherence.
 
 - Experiment: Force FEX “interpreter mode” (attempt) via `FEX_CORE=0`
+
   - Run: `.local/edge-muvm/headless-1766288581818` (`--edge-watchdog-seconds 220`, `--edge-env=FEX_CORE=0`).
   - Result: still no completion (`stdout_bytes: 0`), guest watchdog kills Edge (`edge_exit: SIGKILL`).
   - Note: env injection confirmed by `preflight.txt` (`EDGE_ENV=FEX_CORE=0`), but this does not prove that FEX accepted/understood the value.

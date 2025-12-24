@@ -1,6 +1,7 @@
 # Fedora Base Image Manifest
 
 ## Core System
+
 - bash
 - coreutils
 - glibc
@@ -11,6 +12,7 @@
 - zlib
 
 ## Graphics Stack (Mesa/Vulkan)
+
 - mesa-dri-drivers
 - mesa-filesystem
 - mesa-libEGL
@@ -21,6 +23,7 @@
 - vulkan-loader
 
 ## X11 / Wayland
+
 - libX11
 - libXau
 - libXcb
@@ -42,6 +45,7 @@
 - libxkbcommon-x11
 
 ## Audio / Multimedia
+
 - alsa-lib
 - gstreamer1
 - gstreamer1-plugins-base
@@ -51,6 +55,7 @@
 - pulseaudio-libs
 
 ## Desktop Frameworks (Bambu Requirements)
+
 - gtk3
 - webkit2gtk3
 - libnotify
@@ -62,6 +67,7 @@
 - gdk-pixbuf2
 
 ## Compatibility / Misc
+
 - fuse-libs
 - libstdc++
 - libuuid

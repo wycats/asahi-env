@@ -50,7 +50,7 @@ These protocols are derived from the Mental Model. Follow them to ensure consist
     - **Update Plan**: Use \`exo task add "Task Name"\` to populate the plan.
     - **Draft**: Create/Update \`implementation-plan.toml\`. Stop for approval.
 3.  **Implement**: Write code and tests.
-    - **Document**: Use \`exo walkthrough add\` to document changes as you go.
+    - **Document**: Record work inside the phase execution artifact (\`docs/agent-context/current/implementation-plan.toml\`).
 4.  **Verify**: Run \`exo verify\`.
 5.  **Commit**: Ensure all changes are committed. Use \`exo phase finish --message "..."\` to commit and finish in one step.
 6.  **Finish**: \`exo phase finish\` (or \`.github/prompts/phase-transition.prompt.md\`).
@@ -67,13 +67,13 @@ These protocols are derived from the Mental Model. Follow them to ensure consist
 
 ### Protocol: The Context Check
 
-- **Read First**: Before answering, check `docs/agent-context/plan.toml` and `decisions.toml`.
-- **Write Often**: Keep `docs/agent-context/current/task-list.toml` up to date.
+- **Read First**: Before answering, check `docs/agent-context/plan.toml` and `docs/agent-context/current/implementation-plan.toml`.
+- **Write Often**: Keep the phase execution artifact up to date (tasks/logs live in `implementation-plan.toml`).
 
 ### Protocol: Tool Usage
 
-- **Structured IO**: When adding ideas or modifying the plan, you **MUST** use the `exo` CLI tools (`exo idea`, `exo plan`, `exo task`, `exo walkthrough`).
-- **Read-Only TOML**: Treat `plan.toml`, `ideas.toml`, `walkthrough.toml`, and `task-list.toml` as **READ-ONLY**.
+- **Structured IO**: When adding ideas or modifying the plan, you **MUST** use the `exo` CLI tools (`exo idea`, `exo plan`, `exo task`).
+- **Read-Only TOML**: Treat `plan.toml`, `ideas.toml`, and `implementation-plan.toml` as **READ-ONLY**.
   - **DO NOT** edit these files directly with file editing tools.
   - **DO NOT** attempt to "fix" formatting or add comments manually.
   - **ALWAYS** use the `exo` CLI to modify them.
@@ -85,8 +85,7 @@ These protocols are derived from the Mental Model. Follow them to ensure consist
 
 - `docs/agent-context/`: The Brain.
   - `plan.toml`: The Big Picture.
-  - `decisions.toml`: The Why.
-  - `current/walkthrough.toml`: The Now.
+    - `current/implementation-plan.toml`: The Now.
 - `docs/rfcs/`: The History (Laws).
 - `docs/manual/`: The Reality (Code).
 - `exo`: The Tool.
