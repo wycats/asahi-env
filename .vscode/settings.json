@@ -1,0 +1,51 @@
+{
+  "VsCodeTaskButtons.showCounter": false,
+  "VsCodeTaskButtons.tasks": [
+    {
+      "label": "$(pulse) Doctor",
+      "alignment": "left",
+      "tooltip": "Doctor actions (snapshots + diff)",
+      "tasks": [
+        {
+          "label": "Snapshot (no sudo)",
+          "task": "Doctor snapshot (no sudo) → repo artifact",
+          "description": "Capture an unprivileged doctor snapshot into docs/agent-context/research"
+        },
+        {
+          "label": "Snapshot (sudo)",
+          "task": "Doctor snapshot (sudo) → repo artifact",
+          "description": "Capture a privileged doctor snapshot into docs/agent-context/research"
+        },
+        {
+          "label": "Diff latest two snapshots",
+          "task": "Doctor diff (latest two repo snapshots)",
+          "description": "Generate a JSON diff between the latest two repo-local doctor snapshots"
+        }
+      ]
+    },
+    {
+      "label": "$(shield) Doctor (sudo)",
+      "task": "Doctor snapshot (sudo) → repo artifact",
+      "alignment": "left",
+      "tooltip": "Run privileged doctor snapshot into docs/agent-context/research"
+    },
+    {
+      "label": "$(check) Verify",
+      "task": "Verify phase (exo)",
+      "alignment": "left",
+      "tooltip": "Run exo verify for the current phase"
+    }
+  ],
+  "files.watcherExclude": {
+    "third_party/**": true
+  },
+  "workbench.localHistory.exclude": {
+    "third_party/**": true
+  },
+  "explorer.autoRevealExclude": {
+    "third_party": true
+  },
+  "search.exclude": {
+    "third_party": true
+  }
+}

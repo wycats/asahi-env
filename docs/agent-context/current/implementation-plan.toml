@@ -9,246 +9,85 @@ rfcs = []
 [plan]
 
 [[plan.changes]]
-name = "Baseline + Empiricism"
-type = "chore"
-details = "Collect current machine state and record what is actually working; define safe probes to validate/retire hacks."
-files = []
-tests = []
-satisfies = ["doctor"]
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "system-snapshot"
-title = "Capture baseline system state (doctor report)"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "probes-catalog"
-title = "Define probes + deletion criteria for hacks"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "touchpad-probes"
-title = "Add sudo libinput probe workflow"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "fedora-native-build"
-title = "Build Fedora Native Base Image (fedora-base.erofs)"
-status = "pending"
-
-[[plan.changes.tasks]]
-id = "fedora-native-verify"
-title = "Verify Bambu Studio on Fedora Native Base"
-status = "pending"
-
-[[plan.changes]]
-name = "Tooling: Rust Automation + Verification"
+name = "PCSC bridge verification + docs"
 type = "feat"
-details = "Design and implement Rust automation primitives: system-state collection, idempotent config edits, and verifiers; wire into exo verify."
+details = "Confirm the PC/SC vsock bridge works end-to-end (host pcscd ↔ guest pcsclite clients), document the flags and expected environment variables, and ensure failures are evidence-backed."
 files = []
 tests = []
-satisfies = ["rust-cli", "verify"]
-no_test_reason = "Planning entry; tests will be listed once Rust crate + harness exist."
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "asahi-setup-spotlight"
-title = "Implement asahi-setup spotlight automation (GNOME + keyd)"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "asahi-setup-tests"
-title = "Add unit tests for keyd patching/idempotence"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "verify-script"
-title = "Add scripts/verify-phase.sh (fmt/clippy/coverage)"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "clippy-scope"
-title = "Tune clippy gates to high-signal lints"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "mdbook-scaffold"
-title = "Add tools/book mdBook scaffold (no build yet)"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "doctor-tool"
-title = "Add doctor report + probes CLI tooling"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "portability-gating"
-title = "Gate hacks by platform/probes (Asahi vs Framework)"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "keyd-overload"
-title = "Implement Cmd tap/hold overload (e.g. Cmd-tap Overview)"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "doctor-probe-wifi-services"
-title = "Doctor: add Wi-Fi service probes (iwd/NM)"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "doctor-probe-tiling-settings"
-title = "Doctor: add tiling-related gsettings probes"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "doctor-probe-boltctl"
-title = "Doctor: add optional boltctl probe"
-status = "completed"
+satisfies = ["First Step::pcsc-bridge"]
+no_test_reason = "Primarily integration verification + documentation; add tests later once we factor pure components."
 
 [[plan.changes]]
-name = "Edge via muvm + packaging"
+name = "Evidence retention + git hygiene"
 type = "chore"
-details = """
-Empirical goal
-- Determine whether Microsoft Edge (x86_64 RPM) can run reliably under `muvm` (including login + sync).
-
-Key questions
-- Can we install Edge into the muvm environment in a repeatable way?
-- Do we want per-app muvm images, or a shared "x86 apps" image?
-- What’s the right persistence model (home dir, cache, profile data)?
-
-Experiments (small, verifiable)
-- Acquire Edge x86_64 RPM (download from Microsoft) and attempt install inside muvm.
-- Confirm Edge launches, renders correctly, and can authenticate (sync).
-- Capture a before/after doctor snapshot and note any host-side deps.
-
-Packaging direction (candidate)
-- A wrapper that:
-  - downloads or locates the x86_64 RPM
-  - installs it into a managed muvm image (idempotent)
-  - generates a desktop entry that launches via muvm
-- Stretch: investigate whether host `dnf` can be used to *source* x86 artifacts while execution happens via muvm.
-
-Deletion criteria
-- If Edge under muvm is too flaky (crashes, graphics issues, login failures), stop and document the failure mode + evidence."""
+details = "Decide what belongs in git vs local-only artifacts; update .gitignore and/or documentation accordingly; ensure docs/agent-context/research outputs are ignored by default, and keep only curated summaries in-tree."
 files = []
 tests = []
-status = "in-progress"
-
-[[plan.changes.tasks]]
-id = "edge-muvm-scaffold"
-title = "Add Edge muvm experiment scaffold"
-status = "completed"
-notes = "Create a minimal, gated script and a research note; no downloads."
+satisfies = ["First Step::wrapup::evidence-retention", "First Step::wrapup::gitignore"]
+no_test_reason = "Chore/docs changes."
 
 [[plan.changes]]
-name = "Docs: Runbook"
-type = "docs"
-details = "Refactor bootstrap.md into a coherent, modular runbook (Goal/Apply/Verify/Rollback)."
-files = []
-tests = []
-satisfies = ["runbook"]
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "rfc-0001"
-title = "Create Stage-0 RFC for modifier semantics"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "bootstrap-runbook"
-title = "Refactor bootstrap.md into modular runbook"
-status = "completed"
-
-[[plan.changes]]
-name = "Docs: Manifesto Expansion"
-type = "docs"
-details = "Expand the design manifesto to cover portability + empiricism without hardcoding this repo’s exact operational shape."
-files = []
-tests = []
-satisfies = ["manifesto"]
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "manifesto-expand"
-title = "Expand manifesto with portability + empiricism"
-status = "completed"
-
-[[plan.changes]]
-name = "Edge: pthread_create(EAGAIN) experiments"
+name = "Clean working tree + remove stragglers"
 type = "chore"
-details = """
-Run a small set of falsifiable experiments to explain Chromium `pthread_create(...)=EAGAIN` under muvm+FEX.
-
-T1: Classify "fatal" stack failures
-- For each PID that logs pthread_create, extract from strace the sequence `mmap(... MAP_STACK ...)` followed by `mprotect(<same addr>, ~1MiB, RW) = -1 ENOMEM`.
-
-T2: Overcommit policy flip
-- Force guest `vm.overcommit_memory=1` (or adjust ratio) and re-run; compare T1 event rate.
-
-T3: Limits + cgroups snapshot
-- Capture `/proc/self/limits`, `/proc/self/cgroup`, and cgroup memory controller state from inside the guest for each run.
-
-T4: Repeatability matrix
-- Repeat runs per `--mem` setting until at least one bad run; correlate pthread logs with T1 events and commit accounting."""
-files = ["scripts/edge-muvm-experiment.sh"]
+details = "Remove accidental/unnecessary files from the repo root (logs, scratch manifests, debug outputs). Ensure any remaining non-code artifacts are either intentionally tracked docs or properly ignored."
+files = []
 tests = []
-no_test_reason = "Experiment harness + log analysis only"
+satisfies = ["First Step::wrapup::cleanup-working-tree"]
+no_test_reason = "Chore cleanup."
 
-[[plan.changes.tasks]]
-id = "classify-stack-mprotect"
-title = "Classify stack mprotect ENOMEM per pthread PID"
-status = "pending"
+[[plan.changes]]
+name = "Cargo-ify muvm workflows"
+type = "refactor"
+details = "Replace remaining ad-hoc scripts with Cargo binaries/subcommands where appropriate (runner/orchestrator/probes). Keep shell scripts only as thin wrappers that call cargo."
+files = []
+tests = []
+satisfies = ["First Step::muvm::cargoify-tools", "First Step::muvm::remove-legacy-scripts"]
+no_test_reason = "Mostly CLI wiring/refactors; rely on existing crate tests + manual smoke."
 
-[[plan.changes.tasks]]
-id = "overcommit-flip"
-title = "Run guest overcommit policy flip experiment"
-status = "pending"
+[[plan.changes]]
+name = "Polish appimage-runner UX"
+type = "feat"
+details = "Make the runner boring to use: stable defaults, documented profiles, deterministic output dirs, and no tribal-knowledge env required for known apps like Krita."
+files = []
+tests = []
+satisfies = ["First Step::muvm::runner-polish"]
+no_test_reason = "CLI/UX changes; add tests opportunistically where extraction/entrypoint logic is pure."
 
-[[plan.changes.tasks]]
-id = "snapshot-limits-cgroups"
-title = "Capture guest limits + cgroup memory settings"
-status = "pending"
+[[plan.changes]]
+name = "Overlay invariants + evidence artifacts"
+type = "feat"
+details = "Codify RFC 0003 invariants (ABI boundary protection, wrong-arch detection, forbidden paths) in overlay tooling; emit machine-readable manifests/evidence outputs."
+files = []
+tests = []
+satisfies = ["First Step::muvm::overlay-invariants"]
+no_test_reason = "Needs design for test harness over images; will add targeted tests once implementation location is fixed."
 
-[[plan.changes.tasks]]
-id = "repeatability-matrix"
-title = "Repeat per --mem; correlate pthread vs stack mprotect ENOMEM"
-status = "pending"
+[[plan.changes]]
+name = "Document muvm status + next steps"
+type = "docs"
+details = "Write a single place that answers: what works today, how to run it, what is experimental, and what’s next, aligned with the workstation mission."
+files = []
+tests = []
+satisfies = ["First Step::docs::muvm-status", "First Step::docs::quickstart", "First Step::roadmap::back-to-mission"]
+no_test_reason = "Docs-only."
 
-[[plan.changes.tasks]]
-id = "harness-extra-edge-args"
-title = "Harness: allow extra Edge args"
-status = "completed"
+[[plan.changes]]
+name = "Make exo verify green"
+type = "fix"
+details = "Ensure formatting/lints/coverage gates pass in a clean tree; fix any new failures introduced by wrap-up."
+files = []
+tests = []
+satisfies = ["First Step::verify::green"]
+no_test_reason = "Verification is itself the gate."
 
-[[plan.changes.tasks]]
-id = "harness-profile-location"
-title = "Harness: selectable profile location"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "stuck-maps-count"
-title = "Stuck snapshot: record /proc/<pid>/maps count"
-status = "completed"
-
-[[plan.changes.tasks]]
-id = "harness-preserve-dbus-xdg"
-title = "Harness: optional preserve DBus/XDG env"
-status = "completed"
-notes = "Add a CLI flag to stop passing -e DBUS_SESSION_BUS_ADDRESS= and -e XDG_RUNTIME_DIR= to muvm, to test whether Chromium is blocking on session/runtime dir discovery."
-
-[[plan.changes.tasks]]
-id = "harness-guest-sysctl"
-title = "Harness: best-effort guest sysctl writes"
-status = "completed"
-notes = "Add a CLI flag to attempt to write sysctls like vm.overcommit_memory=1 inside guest before spawning Edge; log success/failure to artifacts."
-
-[[plan.changes.tasks]]
-id = "harness-muvm-privileged"
-title = "Harness: optionally run muvm --privileged"
-status = "completed"
-notes = "Add a CLI flag that passes --privileged to muvm so the guest-runner can write /proc/sys (e.g. vm.overcommit_memory=1) for overcommit experiments."
+[[plan.changes]]
+name = "Remove deprecated context projections"
+type = "chore"
+details = "Remove deprecated projection files (task-list.toml, walkthrough.toml) if exo indicates; ensure canonical state lives in implementation-plan.toml."
+files = []
+tests = []
+satisfies = ["First Step::context::projection-cleanup"]
+no_test_reason = "Docs-only cleanup."
 
 [verification]
 automated = ["Run scripts/verify-phase.sh"]

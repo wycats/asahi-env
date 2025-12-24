@@ -1,6 +1,11 @@
 .local
 target
 temp_debug
+debug_root
+dnf-cache
+dnf-log
+dnf-persist
+fex-standalone
 
 # EROFS images
 *.erofs
@@ -16,9 +21,42 @@ sniper-work/
 # AppImage runner cache
 .cache/
 
+# Evidence artifacts (high churn; keep curated notes only)
+docs/agent-context/research/**
+!docs/agent-context/research/**/
+!docs/agent-context/research/**/*.md
+
+# Generated research artifacts (regenerable; too large to track)
+docs/agent-context/research/sniper-manifest*.md
+
+# Coverage outputs
+coverage/
+
+# Third-party upstream checkouts
+third_party/**
+!third_party/README.md
+!third_party/patches/**
+!third_party/patches/README.md
+
 # IDE
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/settings.json
 .idea/
 
 # OS
 .DS_Store
+
+# Local scratch artifacts (keep out of git)
+/build.log
+/server.log
+/server_help.log
+/vm_debug.log
+/output.txt
+/stderr.txt
+/offset.txt
+/typescript
+/hello
+/hello.rs
+/small-manifest.md
+/sniper-manifest-verified.md

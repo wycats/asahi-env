@@ -1,0 +1,22 @@
+[package]
+name = "appimage-runner"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+# Optional, more “Rust-native” SquashFS extraction via libsquashfs (squashfs-tools-ng).
+# This removes the runtime dependency on the `unsquashfs` binary, but requires the
+# system library + headers to build/link.
+squashfs-ng = ["dep:squashfs-ng"]
+
+[dependencies]
+anyhow = "1.0.100"
+clap = { version = "4.5.53", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+portable-pty = "0.9.0"
+chrono = { version = "0.4", features = ["clock", "std"] }
+
+libc = "0.2"
+
+squashfs-ng = { version = "0.1.3", optional = true }

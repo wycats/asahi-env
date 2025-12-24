@@ -653,7 +653,7 @@ sudo dnf remove dconf-editor seahorse libsecret
 
 **Apply**
 
-- Microsoft Edge: download the Linux `.rpm` from https://www.microsoft.com/edge and install it.
+ - Microsoft Edge: download the Linux `.rpm` from https://www.microsoft.com/edge and install it.
 
 **Verify**
 

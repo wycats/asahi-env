@@ -5,6 +5,9 @@ cd "$(dirname "$0")/.."
 
 echo "== Repo verify (phase) =="
 
+echo "-- RFCs (non-empty guardrail)"
+./scripts/check-rfcs-nonempty.sh
+
 echo "-- rustfmt"
 if command -v cargo >/dev/null 2>&1; then
   cargo fmt --manifest-path tools/asahi-setup/Cargo.toml --all --check

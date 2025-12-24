@@ -1,0 +1,15 @@
+[package]
+name = "sniper-overlay"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.4", features = ["derive"] }
+tempfile = "3.8"
+regex = "1.10"
+reqwest = { version = "0.11", features = ["blocking"] }
+flate2 = "1.0"
+tar = "0.4"
+indicatif = "0.17"
+dirs = "5.0"
