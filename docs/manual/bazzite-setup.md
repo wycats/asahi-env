@@ -45,6 +45,8 @@ cargo run -p bazzite-setup -- apply --all --dry-run
 - If `rpm-ostree` says a package is "already requested", it means it’s already staged in the pending deployment; reboot, then re-run `bazzite-setup`.
 - GNOME settings are applied via `gsettings` and are best-effort; if `gsettings` isn’t available (non-GNOME session), the tool skips GNOME changes.
 
+Note: Bazzite typically uses Bazaar for app browsing/installs; `bazzite-setup` does not try to configure GNOME Software (`org.gnome.software`), since it may not be present.
+
 ## Troubleshooting
 
 ### `Packages not found: keyd`

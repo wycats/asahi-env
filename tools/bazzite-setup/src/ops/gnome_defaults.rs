@@ -40,8 +40,6 @@ pub fn check(_allow_sudo: bool) -> Result<()> {
         "true",
     )?;
 
-    check_key("org.gnome.software", "download-updates-on-metered", "true")?;
-
     Ok(())
 }
 
@@ -84,13 +82,6 @@ pub fn apply(_allow_sudo: bool, dry_run: bool) -> Result<()> {
     set_key(
         "org.gnome.desktop.interface",
         "show-battery-percentage",
-        "true",
-        dry_run,
-    )?;
-
-    set_key(
-        "org.gnome.software",
-        "download-updates-on-metered",
         "true",
         dry_run,
     )?;
