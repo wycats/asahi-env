@@ -28,6 +28,12 @@ docs/agent-context/research/**
 # Coverage outputs
 coverage/
 
+# Third-party upstream checkouts
+third_party/**
+!third_party/README.md
+!third_party/patches/**
+!third_party/patches/README.md
+
 # IDE
 .vscode/*
 !.vscode/tasks.json
