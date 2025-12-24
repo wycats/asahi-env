@@ -50,9 +50,16 @@ fn main() -> Result<()> {
         extensions.push(to_info(&name_str, &reply));
     }
 
-    extensions.sort_by(|a, b| a.major_opcode.cmp(&b.major_opcode).then_with(|| a.name.cmp(&b.name)));
+    extensions.sort_by(|a, b| {
+        a.major_opcode
+            .cmp(&b.major_opcode)
+            .then_with(|| a.name.cmp(&b.name))
+    });
 
-    let report = Report { display, extensions };
+    let report = Report {
+        display,
+        extensions,
+    };
     println!("{}", serde_json::to_string_pretty(&report)?);
     Ok(())
 }
