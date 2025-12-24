@@ -22,6 +22,13 @@ Include expensive collectors (dconf dumps, full systemd listings):
 
     cargo run -p host-inventory -- --full --output /tmp/inventory-full.json
 
+Root-only snapshot (system-wide state). Intended to be run via sudo:
+
+    cargo build -p host-inventory
+    sudo ./target/debug/host-inventory --root --output /tmp/inventory-root.json
+
+Note: root-only mode intentionally skips user-scoped collectors (for example GNOME dconf dumps and systemd --user), because running those as root would capture the wrong account.
+
 ## What it captures (no-sudo)
 
 - /etc/os-release

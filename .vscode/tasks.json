@@ -34,6 +34,13 @@
       "problemMatcher": []
     },
     {
+      "label": "Inventory snapshot (host, root) → repo artifact",
+      "type": "shell",
+      "command": "set -euo pipefail; cargo build -p host-inventory; out=\"docs/agent-context/research/inventory-$(date +%Y%m%d-%H%M%S)-root.json\"; sudo ./target/debug/host-inventory --root --output \"$out\"; echo \"Wrote $out\"",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
       "label": "Verify phase (exo)",
       "type": "shell",
       "command": "bash",

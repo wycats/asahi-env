@@ -16,6 +16,11 @@ struct Cli {
     /// Include expensive collectors (dconf dumps, full systemd unit lists).
     #[arg(long)]
     full: bool,
+
+    /// Collect system-wide state as root (intended to be run via sudo).
+    /// This disables user-scoped collectors like GNOME dconf dumps and systemd --user.
+    #[arg(long)]
+    root: bool,
 }
 
 #[derive(Serialize)]
@@ -49,6 +54,8 @@ struct OsInfo {
 struct RpmOstreeInfo {
     status: CommandInfo,
     db_diff: CommandInfo,
+    kargs: Option<CommandInfo>,
+    overrides: Option<CommandInfo>,
 }
 
 #[derive(Serialize, Default)]
@@ -112,6 +119,10 @@ struct CommandInfo {
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
+    if cli.root && !nix::unistd::Uid::effective().is_root() {
+        anyhow::bail!("--root requires running as root (try sudo)");
+    }
+
     let mut commands: Vec<CommandInfo> = Vec::new();
     let mut files: Vec<FileInfo> = Vec::new();
 
@@ -129,7 +140,28 @@ fn main() -> Result<()> {
     let rpm_ostree = if command_exists("rpm-ostree") {
         let status = run_capture(&mut commands, vec!["rpm-ostree", "status"]);
         let db_diff = run_capture(&mut commands, vec!["rpm-ostree", "db", "diff"]);
-        Some(RpmOstreeInfo { status, db_diff })
+
+        // These are often useful on rpm-ostree systems, but may require root.
+        let kargs = if cli.root {
+            Some(run_capture(&mut commands, vec!["rpm-ostree", "kargs"]))
+        } else {
+            None
+        };
+        let overrides = if cli.root {
+            Some(run_capture(
+                &mut commands,
+                vec!["rpm-ostree", "override", "list"],
+            ))
+        } else {
+            None
+        };
+
+        Some(RpmOstreeInfo {
+            status,
+            db_diff,
+            kargs,
+            overrides,
+        })
     } else {
         None
     };
@@ -138,7 +170,7 @@ fn main() -> Result<()> {
         let mut info = SystemdInfo::default();
 
         if command_exists("systemctl") {
-            if cli.full {
+            if cli.full || cli.root {
                 info.enabled_unit_files = Some(run_capture(
                     &mut commands,
                     vec!["systemctl", "list-unit-files", "--state=enabled"],
@@ -154,20 +186,22 @@ fn main() -> Result<()> {
                 ));
             }
 
-            info.user_enabled_unit_files = Some(run_capture(
-                &mut commands,
-                vec!["systemctl", "--user", "list-unit-files", "--state=enabled"],
-            ));
-            info.user_active_units = Some(run_capture(
-                &mut commands,
-                vec![
-                    "systemctl",
-                    "--user",
-                    "list-units",
-                    "--type=service",
-                    "--state=running",
-                ],
-            ));
+            if !cli.root {
+                info.user_enabled_unit_files = Some(run_capture(
+                    &mut commands,
+                    vec!["systemctl", "--user", "list-unit-files", "--state=enabled"],
+                ));
+                info.user_active_units = Some(run_capture(
+                    &mut commands,
+                    vec![
+                        "systemctl",
+                        "--user",
+                        "list-units",
+                        "--type=service",
+                        "--state=running",
+                    ],
+                ));
+            }
         }
 
         info
@@ -215,7 +249,7 @@ fn main() -> Result<()> {
             info.keyd_active = Some(systemctl_bool("is-active", "keyd"));
         }
 
-        if cli.full {
+        if cli.full && !cli.root {
             let mut gnome = GnomeKeybindings::default();
             if command_exists("dconf") {
                 gnome.wm_keybindings = Some(run_capture(
@@ -245,7 +279,7 @@ fn main() -> Result<()> {
         None
     };
 
-    let toolbox = if command_exists("toolbox") {
+    let toolbox = if !cli.root && command_exists("toolbox") {
         Some(ToolboxInfo {
             list: run_capture(&mut commands, vec!["toolbox", "list"]),
         })
