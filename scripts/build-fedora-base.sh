@@ -1,38 +1,62 @@
 #!/bin/bash
 set -euo pipefail
 
-# Configuration
-IMAGE_NAME="fedora-base.erofs"
-ROOTFS_DIR="fedora-rootfs"
-FEDORA_RELEASE="41" # Or Rawhide
-ARCH="x86_64"
+# Ensure we are at the project root
+if [ ! -f "Cargo.toml" ]; then
+    echo "Error: Please run this script from the project root."
+    exit 1
+fi
 
-# Clean up
-rm -rf "$ROOTFS_DIR" "$IMAGE_NAME"
-mkdir -p "$ROOTFS_DIR"
+# Build dependencies
+echo "Building fedora-builder..."
+cargo build --bin fedora-builder
 
-# Install packages into rootfs
-echo "Installing Fedora packages..."
-dnf install --installroot="$PWD/$ROOTFS_DIR" \
-    --releasever="$FEDORA_RELEASE" \
-    --forcearch="$ARCH" \
-    --setopt=install_weak_deps=False \
-    --nodocs \
-    -y \
-    bash coreutils glibc glibc-all-langpacks ncurses systemd systemd-libs zlib \
-    mesa-dri-drivers mesa-filesystem mesa-libEGL mesa-libGL mesa-libgbm mesa-libglapi mesa-vulkan-drivers vulkan-loader \
-    libX11 libXau libXcb libXcomposite libXcursor libXdamage libXext libXfixes libXi libXinerama libXrandr libXrender libXxf86vm \
-    libwayland-client libwayland-cursor libwayland-egl libwayland-server libxkbcommon libxkbcommon-x11 \
-    alsa-lib gstreamer1 gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-bad-free pipewire-libs pulseaudio-libs \
-    gtk3 webkit2gtk3 libnotify libsecret libsoup openssl pango cairo gdk-pixbuf2 \
-    fuse-libs libstdc++ libuuid libxml2 freetype fontconfig
+echo "Building muvm..."
+cargo build --manifest-path third_party/muvm/Cargo.toml --bin muvm --bin muvm-guest
 
-# Cleanup DNF metadata to save space
-dnf clean all --installroot="$PWD/$ROOTFS_DIR"
-rm -rf "$ROOTFS_DIR/var/cache/dnf"
+# Define paths
+MUVM="./third_party/muvm/target/debug/muvm"
+OUTPUT="fedora-base.erofs"
 
-# Build EROFS image
-echo "Building EROFS image..."
-mkfs.erofs -zlz4hc "$IMAGE_NAME" "$ROOTFS_DIR"
+# Check if muvm exists
+if [ ! -f "$MUVM" ]; then
+    echo "Error: muvm binary not found at $MUVM"
+    exit 1
+fi
 
-echo "Done: $IMAGE_NAME"
+# Run in VM
+echo "Running build in muvm..."
+# We use a complex bash command to setup a tmpfs workspace, run the builder, and copy the result back.
+# This avoids permission issues with dnf on the host mount and ensures a clean build environment.
+$MUVM --privileged -- bash -c "
+    set -e
+    
+    # Navigate to project root in guest (assuming standard muvm mount)
+    # We use the host's PWD to find the path
+    HOST_PWD=\"$(pwd)\"
+    if [ -d \"\$HOST_PWD\" ]; then
+        cd \"\$HOST_PWD\"
+    else
+        echo \"Error: Could not find project directory \$HOST_PWD in guest\"
+        exit 1
+    fi
+
+    echo \"Setting up tmpfs workspace...\"
+    mkdir -p /tmp/build
+    mount -t tmpfs tmpfs /tmp/build
+    
+    echo \"Copying builder to workspace...\"
+    cp target/debug/fedora-builder /tmp/build/
+    
+    echo \"Running fedora-builder...\"
+    cd /tmp/build
+    ./fedora-builder --release 41 --arch aarch64 --output fedora-base.erofs
+    
+    echo \"Copying artifact back to host...\"
+    cp fedora-base.erofs \"\$HOST_PWD/$OUTPUT\"
+    
+    echo \"Build complete inside VM.\"
+"
+
+echo "Success! Artifact available at $OUTPUT"
+ls -lh "$OUTPUT"
