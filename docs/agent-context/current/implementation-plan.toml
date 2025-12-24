@@ -17,6 +17,11 @@ tests = []
 satisfies = ["First Step::pcsc-bridge"]
 no_test_reason = "Primarily integration verification + documentation; add tests later once we factor pure components."
 
+[[plan.changes.tasks]]
+id = "bazzite-setup"
+title = "Add bazzite-setup (keyd + themes + GNOME defaults)"
+status = "completed"
+
 [[plan.changes]]
 name = "Evidence retention + git hygiene"
 type = "chore"
@@ -88,6 +93,28 @@ files = []
 tests = []
 satisfies = ["First Step::context::projection-cleanup"]
 no_test_reason = "Docs-only cleanup."
+
+[[plan.changes]]
+name = "Bazzite setup automation (keyd + themes + GNOME defaults)"
+type = "feat"
+details = "Add a Bazzite-focused setup CLI with split targets (keyd/themes/gnome-defaults) plus apply/check --all; uses rpm-ostree for host package layering, installs Bibata cursor user-locally, and applies runbook-backed GNOME gsettings best-effort."
+files = ["Cargo.toml", "Cargo.lock", ".vscode/tasks.json", "docs/manual/README.md", "docs/manual/bazzite-setup.md", "tools/bazzite-setup/Cargo.toml", "tools/bazzite-setup/src/main.rs", "tools/bazzite-setup/src/ops/keyd.rs", "tools/bazzite-setup/src/ops/themes.rs", "tools/bazzite-setup/src/ops/gnome_defaults.rs", "tools/bazzite-setup/src/ops/util.rs", "tools/bazzite-setup/src/ops/mod.rs"]
+tests = []
+no_test_reason = "Host-dependent integration; validated via exo verify + cargo fmt."
+status = "completed"
+feedback = [{ author = "Copilot", message = "Implemented and documented bazzite-setup; committed and pushed to main as be58dec. Includes split targets + apply/check --all; host rpm-ostree layering + GNOME gsettings best-effort." }]
+
+[[plan.changes.tasks]]
+id = "bazzite-setup"
+title = "Implement bazzite-setup (keyd + themes + GNOME defaults)"
+status = "completed"
+
+[[plan.changes.tasks.verification]]
+kind = "test"
+command = "exo verify"
+result = "pass"
+when = "2025-12-24T21:01:49.071732706+00:00"
+details = "Verified after implementation; code landed as commit be58dec on main."
 
 [verification]
 automated = ["Run scripts/verify-phase.sh"]
