@@ -1,6 +1,11 @@
 .local
 target
 temp_debug
+debug_root
+dnf-cache
+dnf-log
+dnf-persist
+fex-standalone
 
 # EROFS images
 *.erofs
@@ -16,8 +21,17 @@ sniper-work/
 # AppImage runner cache
 .cache/
 
+# Evidence artifacts (high churn; keep curated notes only)
+docs/agent-context/research/**
+!docs/agent-context/research/**/*.md
+
+# Coverage outputs
+coverage/
+
 # IDE
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/settings.json
 .idea/
 
 # OS
