@@ -100,6 +100,7 @@ fn ensure_bibata_modern_ice(dry_run: bool) -> Result<()> {
     if util::command_exists("curl") {
         util::run_ok(
             std::process::Command::new("curl")
+                .arg("-f")
                 .arg("-L")
                 .arg(url)
                 .arg("-o")
@@ -116,6 +117,27 @@ fn ensure_bibata_modern_ice(dry_run: bool) -> Result<()> {
         .context("wget download")?;
     } else {
         anyhow::bail!("need curl or wget to download Bibata cursor theme");
+    }
+
+    // Validate that the downloaded file is actually a gzip stream.
+    // (GitHub can return HTML for rate limiting / errors, which would later fail tar.)
+    {
+        let bytes = std::fs::read(&archive).context("read downloaded archive")?;
+        let is_gzip = bytes.len() >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b;
+        if !is_gzip {
+            let preview_len = bytes.len().min(200);
+            let preview = String::from_utf8_lossy(&bytes[..preview_len]);
+            anyhow::bail!(
+                "downloaded Bibata archive is not gzip (got {} bytes).\n\
+Likely cause: the URL returned HTML instead of a tarball (rate limit, captive portal, etc).\n\
+URL: {url}\n\
+Path: {}\n\
+First bytes preview:\n{}",
+                bytes.len(),
+                archive.display(),
+                preview
+            );
+        }
     }
 
     util::run_ok(

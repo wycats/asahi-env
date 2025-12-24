@@ -99,7 +99,10 @@ pub fn apply(_allow_sudo: bool, dry_run: bool) -> Result<()> {
 }
 
 fn check_key(schema: &str, key: &str, desired: &str) -> Result<()> {
-    let current = util::gsettings_try_get(schema, key)?.unwrap_or_else(|| "<absent>".to_string());
+    let Some(current) = util::gsettings_try_get(schema, key)? else {
+        println!("gsettings: {schema} {key}: <unavailable> (skipping)");
+        return Ok(());
+    };
     if current == desired {
         println!("gsettings: {schema} {key} already {desired}");
     } else {
@@ -109,7 +112,10 @@ fn check_key(schema: &str, key: &str, desired: &str) -> Result<()> {
 }
 
 fn set_key(schema: &str, key: &str, desired: &str, dry_run: bool) -> Result<()> {
-    let current = util::gsettings_try_get(schema, key)?.unwrap_or_else(|| "<absent>".to_string());
+    let Some(current) = util::gsettings_try_get(schema, key)? else {
+        println!("gsettings: {schema} {key}: <unavailable> (skipping)");
+        return Ok(());
+    };
     if current == desired {
         println!("gsettings: {schema} {key} already {desired}");
         return Ok(());
