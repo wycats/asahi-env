@@ -175,6 +175,23 @@ fn ensure_rpmostree_packages(packages: &[&str], allow_sudo: bool, dry_run: bool)
         cmd.arg(pkg);
     }
 
-    util::run_ok(&mut cmd).context("rpm-ostree install")?;
+    let out = util::run(&mut cmd).context("spawn rpm-ostree install")?;
+    if !out.status.success() {
+        let stderr = String::from_utf8_lossy(&out.stderr);
+
+        // If a previous run already staged these packages in the pending deployment,
+        // rpm-ostree can exit non-zero with an "already requested" message.
+        if stderr.contains("already requested") {
+            println!("rpm-ostree: packages already requested; reboot to apply");
+            return Ok(());
+        }
+
+        anyhow::bail!(
+            "rpm-ostree install failed\nstatus: {}\nstdout: {}\nstderr: {}",
+            out.status,
+            String::from_utf8_lossy(&out.stdout),
+            stderr
+        );
+    }
     Ok(())
 }

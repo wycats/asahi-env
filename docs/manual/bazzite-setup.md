@@ -42,6 +42,7 @@ cargo run -p bazzite-setup -- apply --all --dry-run
 ## Notes
 
 - `rpm-ostree install …` requires a reboot to take effect. `bazzite-setup` will print a reminder when it stages an install.
+- If `rpm-ostree` says a package is "already requested", it means it’s already staged in the pending deployment; reboot, then re-run `bazzite-setup`.
 - GNOME settings are applied via `gsettings` and are best-effort; if `gsettings` isn’t available (non-GNOME session), the tool skips GNOME changes.
 
 ## Troubleshooting

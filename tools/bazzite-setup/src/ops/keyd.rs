@@ -238,6 +238,11 @@ fn ensure_rpmostree_package_installed(
         let stdout = String::from_utf8_lossy(&out.stdout);
         let stderr = String::from_utf8_lossy(&out.stderr);
 
+        if stderr.contains("already requested") {
+            println!("rpm-ostree: keyd already requested; reboot to apply");
+            return Ok(());
+        }
+
         // Common on Bazzite/Silverblue-like hosts: package isn't provided by enabled repos.
         // For keyd specifically, try enabling a known COPR and retrying.
         if missing == ["keyd"] && stderr.contains("Packages not found: keyd") {
@@ -252,7 +257,22 @@ fn ensure_rpmostree_package_installed(
 
                 let mut retry = util::command("rpm-ostree", allow_sudo);
                 retry.arg("install").arg("keyd");
-                util::run_ok(&mut retry).context("rpm-ostree install (after enabling COPR)")?;
+                let out = util::run(&mut retry)
+                    .context("spawn rpm-ostree install (after enabling COPR)")?;
+                if !out.status.success() {
+                    let stderr = String::from_utf8_lossy(&out.stderr);
+                    if stderr.contains("already requested") {
+                        println!("rpm-ostree: keyd already requested; reboot to apply");
+                        return Ok(());
+                    }
+
+                    anyhow::bail!(
+                        "rpm-ostree install (after enabling COPR) failed\nstatus: {}\nstdout: {}\nstderr: {}",
+                        out.status,
+                        String::from_utf8_lossy(&out.stdout),
+                        stderr
+                    );
+                }
                 return Ok(());
             }
 
