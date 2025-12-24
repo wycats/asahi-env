@@ -42,3 +42,15 @@ third_party/**
 
 # OS
 .DS_Store
+
+# Local scratch artifacts (keep out of git)
+/build.log
+/server.log
+/server_help.log
+/vm_debug.log
+/output.txt
+/stderr.txt
+/offset.txt
+/typescript
+/hello
+/hello.rs

@@ -1,0 +1,20 @@
+[alias]
+# Build and install asahi-setup into a per-user bin dir.
+#
+# Usage:
+#   cargo install-bin
+#
+# Destination selection:
+# - If $XDG_BIN_HOME is set, installs into that directory.
+# - Otherwise installs into ~/.local/bin.
+#
+# Override with:
+#   cargo run --manifest-path tools/install-asahi-setup/Cargo.toml -- --bin-dir /some/bin
+install-bin = "run --quiet -p install-asahi-setup --"
+
+# Run the main tool directly via the workspace.
+asahi-setup = "run --quiet -p asahi-setup --"
+
+# Common dev loop shortcuts.
+doctor = "run --quiet -p asahi-setup -- doctor"
+verify-phase = "run --quiet -p asahi-setup -- check all"
