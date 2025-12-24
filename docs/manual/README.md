@@ -10,6 +10,12 @@ This is the canonical documentation for the current system.
 
 - [Fedora Builder](build-system.md)
 
+## Host Inventory
+
+This repo includes a portable host inventory snapshot tool.
+
+- [Host inventory (tooling)](host-inventory.md)
+
 ## Evidence
 
 This repo produces lots of run artifacts (logs, JSON reports, probe outputs) under `docs/agent-context/research/`.
