@@ -5,6 +5,7 @@ members = [
   "tools/install-asahi-setup",
   "tools/edge-muvm-experiment",
   "tools/appimage-runner",
+  "tools/host-inventory",
   "tools/x11-opcodes",
   "tools/fex-overlay",
   "tools/sniper-overlay",

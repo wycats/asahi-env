@@ -33,21 +33,21 @@ cargo run --bin fedora-builder -- --vm --output fedora-base.erofs
 
 ### Cross-Architecture Builds (x86_64 on aarch64)
 
-When building an `x86_64` rootfs on an `aarch64` host via `dnf --installroot`, DNF/RPM will execute **scriptlets** inside a chroot. That means the build requires *some* way to run `x86_64` binaries under the chroot.
+When building an `x86_64` rootfs on an `aarch64` host via `dnf --installroot`, DNF/RPM will execute **scriptlets** inside a chroot. That means the build requires _some_ way to run `x86_64` binaries under the chroot.
 
 In practice this comes down to:
 
 - A working `binfmt_misc` registration for `x86_64` that points at an emulator.
 - The emulator must be runnable in the chroot environment.
 
-Important nuance: the `binfmt_misc` `F` (“fix binary”) flag avoids *path lookup* failures for the emulator binary, but it does not magically make a dynamically-linked emulator runnable inside a chroot that lacks the emulator’s dynamic loader and libraries.
+Important nuance: the `binfmt_misc` `F` (“fix binary”) flag avoids _path lookup_ failures for the emulator binary, but it does not magically make a dynamically-linked emulator runnable inside a chroot that lacks the emulator’s dynamic loader and libraries.
 
 This repo’s current approach is to use a **standalone FEX bundle** (including `FEXInterpreter` and `ld-linux-aarch64.so.1`) and make it visible inside the chroot at `/tmp/fex-standalone` (bind-mounted in host mode; copied + registered in VM mode). This is what allows scriptlets to run in cross-arch builds.
 
 If you see failures that look like scriptlets not running (e.g. `exec format error`, `ldconfig` errors, or `glibc`/`lua` scriptlet failures), the first things to verify are:
 
 - Which `binfmt_misc` handlers are enabled (FEX vs QEMU can conflict).
-- Whether the chosen emulator is actually runnable from *inside* the chroot.
+- Whether the chosen emulator is actually runnable from _inside_ the chroot.
 
 The builder has a fallback that retries DNF with `--setopt=tsflags=noscripts`, but that should be treated as a debugging tool (it can produce an incomplete or subtly broken rootfs).
 

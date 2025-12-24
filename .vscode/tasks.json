@@ -1,79 +1,84 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Doctor snapshot (no sudo) → repo artifact",
-			"type": "shell",
-			"command": "set -euo pipefail; out=\"docs/agent-context/research/doctor-$(date +%Y%m%d-%H%M%S)-nosudo.json\"; cargo run -p asahi-setup -- doctor --no-sudo --output \"$out\" --json >/dev/null; echo \"Wrote $out\"",
-			"isBackground": false
-		},
-		{
-			"label": "Doctor snapshot (sudo) → repo artifact",
-			"type": "shell",
-			"command": "set -euo pipefail; cargo build -p asahi-setup; out=\"docs/agent-context/research/doctor-$(date +%Y%m%d-%H%M%S)-sudo.json\"; sudo ./target/debug/asahi-setup doctor --output \"$out\" --json >/dev/null; echo \"Wrote $out\"",
-			"isBackground": false
-		},
-		{
-			"label": "Doctor diff (latest two repo snapshots)",
-			"type": "shell",
-			"command": "set -euo pipefail; shopt -s nullglob; files=(docs/agent-context/research/doctor-*.json); if (( ${#files[@]} < 2 )); then echo \"Need at least two doctor-*.json snapshots in docs/agent-context/research\"; exit 1; fi; newest=$(ls -t docs/agent-context/research/doctor-*.json | head -n 1); older=$(ls -t docs/agent-context/research/doctor-*.json | sed -n '2p'); ts=$(date +%Y%m%d-%H%M%S); out=\"docs/agent-context/research/doctor-diff-${ts}-latest.json\"; cargo run -p asahi-setup -- doctor-diff \"$older\" \"$newest\" --json >\"$out\"; echo \"Wrote $out\"; echo \"older: $older\"; echo \"newer: $newest\"",
-			"isBackground": false
-		},
-		{
-			"label": "Verify phase (exo)",
-			"type": "shell",
-			"command": "bash",
-			"args": [
-				"-lc",
-				"exo verify"
-			],
-			"isBackground": false,
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "always",
-				"panel": "dedicated",
-				"clear": true,
-				"showReuseMessage": false
-			}
-		},
-		{
-			"label": "Run Steam Sniper Builder",
-			"type": "shell",
-			"command": "cargo run --bin steam-sniper",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Delete corrupt tarball",
-			"type": "shell",
-			"command": "rm sniper-work/com.valvesoftware.SteamRuntime.Platform-amd64,i386-sniper-runtime.tar.gz",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Build Fedora Builder",
-			"type": "shell",
-			"command": "cargo",
-			"args": [
-				"build",
-				"--bin",
-				"fedora-builder"
-			],
-			"isBackground": false,
-			"problemMatcher": [
-				"$rustc"
-			],
-			"group": "build"
-		},
-		{
-			"label": "Run appimage-runner probes (timeout)",
-			"type": "shell",
-			"command": "set -euo pipefail; cargo run -p appimage-runner --quiet -- probe display --timeout-seconds 20; cargo run -p appimage-runner --quiet -- probe gpu --timeout-seconds 20; echo done",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Doctor snapshot (no sudo) → repo artifact",
+      "type": "shell",
+      "command": "set -euo pipefail; out=\"docs/agent-context/research/doctor-$(date +%Y%m%d-%H%M%S)-nosudo.json\"; cargo run -p asahi-setup -- doctor --no-sudo --output \"$out\" --json >/dev/null; echo \"Wrote $out\"",
+      "isBackground": false
+    },
+    {
+      "label": "Doctor snapshot (sudo) → repo artifact",
+      "type": "shell",
+      "command": "set -euo pipefail; cargo build -p asahi-setup; out=\"docs/agent-context/research/doctor-$(date +%Y%m%d-%H%M%S)-sudo.json\"; sudo ./target/debug/asahi-setup doctor --output \"$out\" --json >/dev/null; echo \"Wrote $out\"",
+      "isBackground": false
+    },
+    {
+      "label": "Doctor diff (latest two repo snapshots)",
+      "type": "shell",
+      "command": "set -euo pipefail; shopt -s nullglob; files=(docs/agent-context/research/doctor-*.json); if (( ${#files[@]} < 2 )); then echo \"Need at least two doctor-*.json snapshots in docs/agent-context/research\"; exit 1; fi; newest=$(ls -t docs/agent-context/research/doctor-*.json | head -n 1); older=$(ls -t docs/agent-context/research/doctor-*.json | sed -n '2p'); ts=$(date +%Y%m%d-%H%M%S); out=\"docs/agent-context/research/doctor-diff-${ts}-latest.json\"; cargo run -p asahi-setup -- doctor-diff \"$older\" \"$newest\" --json >\"$out\"; echo \"Wrote $out\"; echo \"older: $older\"; echo \"newer: $newest\"",
+      "isBackground": false
+    },
+    {
+      "label": "Inventory snapshot (host, no sudo) → repo artifact",
+      "type": "shell",
+      "command": "set -euo pipefail; out=\"docs/agent-context/research/inventory-$(date +%Y%m%d-%H%M%S)-nosudo.json\"; cargo run -p host-inventory --quiet -- --output \"$out\"; echo \"Wrote $out\"",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "Inventory snapshot (host, full) → repo artifact",
+      "type": "shell",
+      "command": "set -euo pipefail; out=\"docs/agent-context/research/inventory-$(date +%Y%m%d-%H%M%S)-full.json\"; cargo run -p host-inventory --quiet -- --full --output \"$out\"; echo \"Wrote $out\"",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "Verify phase (exo)",
+      "type": "shell",
+      "command": "bash",
+      "args": ["-lc", "exo verify"],
+      "isBackground": false,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Run Steam Sniper Builder",
+      "type": "shell",
+      "command": "cargo run --bin steam-sniper",
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Delete corrupt tarball",
+      "type": "shell",
+      "command": "rm sniper-work/com.valvesoftware.SteamRuntime.Platform-amd64,i386-sniper-runtime.tar.gz",
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build Fedora Builder",
+      "type": "shell",
+      "command": "cargo",
+      "args": ["build", "--bin", "fedora-builder"],
+      "isBackground": false,
+      "problemMatcher": ["$rustc"],
+      "group": "build"
+    },
+    {
+      "label": "Run appimage-runner probes (timeout)",
+      "type": "shell",
+      "command": "set -euo pipefail; cargo run -p appimage-runner --quiet -- probe display --timeout-seconds 20; cargo run -p appimage-runner --quiet -- probe gpu --timeout-seconds 20; echo done",
+      "isBackground": false,
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ]
 }
