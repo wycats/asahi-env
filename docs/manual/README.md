@@ -16,6 +16,12 @@ This repo includes a portable host inventory snapshot tool.
 
 - [Host inventory (tooling)](host-inventory.md)
 
+## Bazzite Setup
+
+This repo includes a small setup tool intended for Bazzite hosts.
+
+- [Bazzite setup (tooling)](bazzite-setup.md)
+
 ## Evidence
 
 This repo produces lots of run artifacts (logs, JSON reports, probe outputs) under `docs/agent-context/research/`.

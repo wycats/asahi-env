@@ -6,6 +6,7 @@ members = [
   "tools/edge-muvm-experiment",
   "tools/appimage-runner",
   "tools/host-inventory",
+  "tools/bazzite-setup",
   "tools/x11-opcodes",
   "tools/fex-overlay",
   "tools/sniper-overlay",

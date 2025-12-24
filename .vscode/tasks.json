@@ -41,6 +41,27 @@
       "problemMatcher": []
     },
     {
+      "label": "Bazzite setup check (all)",
+      "type": "shell",
+      "command": "set -euo pipefail; cargo run -p bazzite-setup -- check --all",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "Bazzite setup apply (all, dry-run)",
+      "type": "shell",
+      "command": "set -euo pipefail; cargo run -p bazzite-setup -- apply --all --dry-run",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
+      "label": "Bazzite setup apply (all)",
+      "type": "shell",
+      "command": "set -euo pipefail; cargo run -p bazzite-setup -- apply --all",
+      "isBackground": false,
+      "problemMatcher": []
+    },
+    {
       "label": "Verify phase (exo)",
       "type": "shell",
       "command": "bash",
