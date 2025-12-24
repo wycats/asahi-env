@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 use clap::{Parser, Subcommand, ValueEnum};
 
 mod ops;
@@ -108,10 +108,30 @@ fn main() -> Result<()> {
                 Target::GnomeDefaults => ops::gnome_defaults::apply(allow_sudo, dry_run)
                     .context("gnome-defaults apply")?,
                 Target::All => {
-                    ops::keyd::apply(allow_sudo, dry_run).context("keyd apply")?;
-                    ops::themes::apply(allow_sudo, dry_run).context("themes apply")?;
-                    ops::gnome_defaults::apply(allow_sudo, dry_run)
-                        .context("gnome-defaults apply")?;
+                    let mut failures: Vec<anyhow::Error> = Vec::new();
+
+                    if let Err(err) = ops::keyd::apply(allow_sudo, dry_run).context("keyd apply") {
+                        eprintln!("ERROR: {err:#}");
+                        failures.push(err);
+                    }
+
+                    if let Err(err) =
+                        ops::themes::apply(allow_sudo, dry_run).context("themes apply")
+                    {
+                        eprintln!("ERROR: {err:#}");
+                        failures.push(err);
+                    }
+
+                    if let Err(err) = ops::gnome_defaults::apply(allow_sudo, dry_run)
+                        .context("gnome-defaults apply")
+                    {
+                        eprintln!("ERROR: {err:#}");
+                        failures.push(err);
+                    }
+
+                    if !failures.is_empty() {
+                        return Err(anyhow!("one or more targets failed"));
+                    }
                 }
             }
         }

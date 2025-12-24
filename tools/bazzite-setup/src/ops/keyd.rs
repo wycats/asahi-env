@@ -233,6 +233,103 @@ fn ensure_rpmostree_package_installed(
         cmd.arg(pkg);
     }
 
-    util::run_ok(&mut cmd).context("rpm-ostree install")?;
+    let out = util::run(&mut cmd).context("spawn rpm-ostree install")?;
+    if !out.status.success() {
+        let stdout = String::from_utf8_lossy(&out.stdout);
+        let stderr = String::from_utf8_lossy(&out.stderr);
+
+        // Common on Bazzite/Silverblue-like hosts: package isn't provided by enabled repos.
+        // For keyd specifically, try enabling a known COPR and retrying.
+        if missing == ["keyd"] && stderr.contains("Packages not found: keyd") {
+            if dry_run {
+                println!("DRY-RUN would enable COPR dspom/keyd and retry rpm-ostree install keyd");
+                return Ok(());
+            }
+
+            if allow_sudo {
+                println!("keyd not found in enabled repos; enabling COPR dspom/keyd");
+                ensure_copr_keyd_repo_enabled(allow_sudo).context("enable COPR dspom/keyd")?;
+
+                let mut retry = util::command("rpm-ostree", allow_sudo);
+                retry.arg("install").arg("keyd");
+                util::run_ok(&mut retry).context("rpm-ostree install (after enabling COPR)")?;
+                return Ok(());
+            }
+
+            return Err(anyhow::anyhow!(
+                "rpm-ostree could not find keyd (and --no-sudo prevents auto-enabling COPR)\n\
+stderr:\n{}",
+                stderr.trim_end()
+            ));
+        }
+
+        if stderr.contains("Packages not found:") {
+            return Err(anyhow::anyhow!(
+                "rpm-ostree could not find one or more packages: {}\n\n\
+Likely cause: the package isn't available in your enabled rpm-ostree repos.\n\
+Next steps:\n\
+  - Confirm with: rpm-ostree search <name> (e.g. rpm-ostree search keyd)\n\
+  - If unavailable, install via an additional repo/COPR or a manual install method, then re-run\n\n\
+stdout:\n{}\n\n\
+stderr:\n{}",
+                missing.join(", "),
+                stdout.trim_end(),
+                stderr.trim_end()
+            ));
+        }
+
+        return Err(anyhow::anyhow!(
+            "command failed: {:?}\nstatus: {}\nstdout: {}\nstderr: {}",
+            cmd,
+            out.status,
+            stdout,
+            stderr
+        ));
+    }
+
+    Ok(())
+}
+
+fn ensure_copr_keyd_repo_enabled(allow_sudo: bool) -> Result<()> {
+    // Uses the COPR repo file directly (works on Atomic hosts without dnf copr plugin).
+    // We intentionally keep this scoped to keyd because COPR repos are a trust decision.
+    const OWNER: &str = "dspom";
+    const PROJECT: &str = "keyd";
+    const DEST: &str = "/etc/yum.repos.d/_copr-dspom-keyd.repo";
+
+    // If already present, do nothing.
+    if Path::new(DEST).exists() {
+        println!("{} already present; skipping", DEST);
+        return Ok(());
+    }
+
+    if !util::command_exists("curl") {
+        return Err(anyhow::anyhow!(
+            "curl not available; cannot fetch COPR repo file {}",
+            DEST
+        ));
+    }
+
+    // Determine Fedora version (%fedora) for the repo URL.
+    let out = util::run_ok(std::process::Command::new("rpm").arg("-E").arg("%fedora"))
+        .context("rpm -E %fedora")?;
+    let fedora = String::from_utf8_lossy(&out.stdout).trim().to_string();
+
+    if fedora.is_empty() {
+        return Err(anyhow::anyhow!(
+            "unable to determine Fedora version via rpm"
+        ));
+    }
+
+    let url = format!(
+        "https://copr.fedorainfracloud.org/coprs/{OWNER}/{PROJECT}/repo/fedora-{fedora}/{OWNER}-{PROJECT}-fedora-{fedora}.repo"
+    );
+
+    println!("fetching COPR repo file: {} -> {}", url, DEST);
+
+    let mut cmd = util::command("curl", allow_sudo);
+    cmd.arg("-fsSL").arg("-o").arg(DEST).arg(url);
+    util::run_ok(&mut cmd).context("download COPR repo file")?;
+
     Ok(())
 }
