@@ -5,6 +5,8 @@ members = [
   "tools/install-asahi-setup",
   "tools/edge-muvm-experiment",
   "tools/appimage-runner",
+  "tools/x11-opcodes",
   "tools/fex-overlay",
-  "tools/sniper-overlay", "tools/fedora-builder",
+  "tools/sniper-overlay",
+  "tools/fedora-builder",
 ]
