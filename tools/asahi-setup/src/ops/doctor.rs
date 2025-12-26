@@ -3,6 +3,8 @@ use anyhow::{anyhow, Context, Result};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
+
+#[cfg(feature = "native-journald")]
 use systemd::{id128::Id128, journal};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
@@ -516,7 +518,12 @@ fn collect(allow_sudo: bool) -> Result<DoctorReport> {
     // This requires the *process* to be able to read the system journal (root or systemd-journal group).
     // We omit the probe when unavailable rather than returning misleading empty output.
     let native_journal_key = "journald (native) titdb since service start".to_string();
-    if can_read_system_journal() {
+    if !cfg!(feature = "native-journald") {
+        skipped.insert(
+            native_journal_key,
+            "native journald probe disabled at build time; rebuild with `--features native-journald` (requires libsystemd development files)".to_string(),
+        );
+    } else if can_read_system_journal() {
         if let Some(p) = probe_titdb_journal_native() {
             commands.insert(native_journal_key, p);
         }
@@ -571,6 +578,7 @@ fn is_not_found(e: &anyhow::Error) -> bool {
     })
 }
 
+#[cfg(feature = "native-journald")]
 fn can_read_system_journal() -> bool {
     let mut j = match journal::OpenOptions::default()
         .system(true)
@@ -593,6 +601,12 @@ fn can_read_system_journal() -> bool {
     }
 }
 
+#[cfg(not(feature = "native-journald"))]
+fn can_read_system_journal() -> bool {
+    false
+}
+
+#[cfg(feature = "native-journald")]
 fn probe_titdb_journal_native() -> Option<CommandProbe> {
     let started_monotonic_usec =
         util::systemctl_show_value("titdb", "ActiveEnterTimestampMonotonic")
@@ -710,6 +724,11 @@ fn probe_titdb_journal_native() -> Option<CommandProbe> {
         stdout: out,
         stderr: String::new(),
     })
+}
+
+#[cfg(not(feature = "native-journald"))]
+fn probe_titdb_journal_native() -> Option<CommandProbe> {
+    None
 }
 
 fn probe_cmd(
