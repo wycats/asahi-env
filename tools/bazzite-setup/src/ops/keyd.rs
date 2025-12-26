@@ -12,17 +12,21 @@ const DEFAULT_KEYD_CONF: &str = r#"[ids]
 # Map physical Left Command (Meta) to a custom layer.
 leftmeta = layer(meta_mac)
 
+# Map physical Right Command as well.
+rightmeta = layer(meta_mac)
+
 # Map physical Left Alt (Option) to Meta (Super/Windows key) for OS shortcuts.
 leftalt = layer(meta)
 
+
 [meta_mac:A]
-# Base layer: Alt.
-# This keeps the GNOME window switcher UI open.
+# Cmd layer defaults to Alt so Cmd-Tab behaves like Alt-Tab.
+# This keeps the GNOME switcher UI open while Cmd is held.
 
-# Window switching
-tab = tab
-grave = grave
-
+# Window/app switching
+# Note: leave Tab/Grave unmapped so the layer's default modifier applies
+# (Alt-Tab / Alt-Grave).
+# Virtual desktops
 # Terminal/app compatibility: IBM CUA clipboard
 c = C-insert
 v = S-insert
@@ -78,6 +82,17 @@ pub fn check(allow_sudo: bool) -> Result<()> {
     let conf_exists = Path::new(KEYD_DEFAULT_CONF).exists();
     println!("{} present: {}", KEYD_DEFAULT_CONF, yesno(conf_exists));
 
+    let keyd_group_exists = group_exists("keyd");
+    println!("group 'keyd' exists: {}", yesno(keyd_group_exists));
+
+    let uinput_present = Path::new("/dev/uinput").exists();
+    println!("/dev/uinput present: {}", yesno(uinput_present));
+    if !uinput_present {
+        println!(
+            "NOTE: /dev/uinput missing; keyd remaps may not take effect until uinput is available"
+        );
+    }
+
     if conf_exists {
         let current = util::read_to_string_maybe_sudo(KEYD_DEFAULT_CONF, allow_sudo)
             .with_context(|| format!("read {KEYD_DEFAULT_CONF}"))?;
@@ -93,6 +108,10 @@ pub fn check(allow_sudo: bool) -> Result<()> {
 
 pub fn apply(allow_sudo: bool, dry_run: bool) -> Result<()> {
     println!("== Apply keyd ==");
+
+    // Some keyd builds expect a 'keyd' group (and will warn if it doesn't exist).
+    // Creating the group is safe and avoids the warning.
+    let _ = ensure_group_exists("keyd", allow_sudo, dry_run)?;
 
     // 1) Ensure keyd is installed (Bazzite host expectation: rpm-ostree).
     ensure_rpmostree_package_installed(&["keyd"], allow_sudo, dry_run)
@@ -143,9 +162,16 @@ pub fn apply(allow_sudo: bool, dry_run: bool) -> Result<()> {
                 );
             }
 
-            // Best-effort reload.
-            if !dry_run {
-                let _ = util::run_ok(std::process::Command::new("keyd").arg("reload"));
+            // Best-effort restart: even if the file didn't change, this makes `apply keyd`
+            // a reliable "make it take effect" operation.
+            if dry_run {
+                println!("DRY-RUN systemctl restart keyd");
+            } else {
+                let _ = util::run_ok(
+                    util::command("systemctl", allow_sudo)
+                        .arg("restart")
+                        .arg("keyd"),
+                );
             }
         } else {
             println!("keyd not available yet; enable will work after reboot");
@@ -188,6 +214,42 @@ fn systemctl_bool(verb: &str, unit: &str, allow_sudo: bool) -> Result<bool> {
         .with_context(|| format!("systemctl {verb} {unit}"))?;
 
     Ok(out.status.success())
+}
+
+fn group_exists(group: &str) -> bool {
+    if !util::command_exists("getent") {
+        return false;
+    }
+
+    std::process::Command::new("getent")
+        .arg("group")
+        .arg(group)
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false)
+}
+
+/// Ensures a system group exists. Returns true if we created it.
+fn ensure_group_exists(group: &str, allow_sudo: bool, dry_run: bool) -> Result<bool> {
+    if group_exists(group) {
+        return Ok(false);
+    }
+
+    println!("creating missing group '{group}'");
+
+    if dry_run {
+        println!("DRY-RUN groupadd -r {group}");
+        return Ok(true);
+    }
+
+    if !util::command_exists("groupadd") {
+        anyhow::bail!("group '{group}' is missing but groupadd is not available");
+    }
+
+    util::run_ok(util::command("groupadd", allow_sudo).arg("-r").arg(group))
+        .with_context(|| format!("groupadd -r {group}"))?;
+
+    Ok(true)
 }
 
 fn ensure_rpmostree_package_installed(

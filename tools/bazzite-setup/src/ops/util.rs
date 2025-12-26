@@ -4,7 +4,50 @@ use std::path::Path;
 use std::process::{Command, Output};
 use std::sync::OnceLock;
 
+fn is_toolbox_guest() -> bool {
+    // `toolbox` sets this marker file inside the container.
+    Path::new("/.toolboxenv").exists()
+}
+
+fn maybe_print_host_exec_notice() {
+    static PRINTED: OnceLock<()> = OnceLock::new();
+    if PRINTED.set(()).is_ok() {
+        println!("toolbox detected; running host commands via `flatpak-spawn --host`");
+    }
+}
+
+fn host_wrap(program: &str, allow_sudo: bool) -> Option<Command> {
+    // When running inside toolbox, try to execute commands on the host.
+    // This is essential for system operations like `rpm-ostree` and `systemctl`.
+    if !is_toolbox_guest() {
+        return None;
+    }
+
+    if !command_exists("flatpak-spawn") {
+        return None;
+    }
+
+    let mut cmd = Command::new("flatpak-spawn");
+    cmd.arg("--host");
+
+    maybe_print_host_exec_notice();
+
+    if should_use_sudo(allow_sudo) {
+        cmd.arg("sudo");
+        cmd.arg("--");
+        cmd.arg(program);
+    } else {
+        cmd.arg(program);
+    }
+
+    Some(cmd)
+}
+
 pub fn command(program: &str, allow_sudo: bool) -> Command {
+    if let Some(cmd) = host_wrap(program, allow_sudo) {
+        return cmd;
+    }
+
     if should_use_sudo(allow_sudo) {
         let mut cmd = Command::new("sudo");
         cmd.arg("--").arg(program);
